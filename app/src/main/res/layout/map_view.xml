@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.campbellapps.christiancampbell.peoplemonv1.Views.MapPageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/map_view"
+        android:layout_weight="1"
+    />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/button1"
+        app:fabSize="normal"
+        android:src="@drawable/pikachu1"
+        android:scaleX="2.5"
+        android:scaleY="2.5"
+        app:backgroundTint="@android:color/transparent"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:id="@+id/button2"
+        app:fabSize="normal"
+        android:src="@drawable/snap"
+        android:scaleX="2.5"
+        android:scaleY="2.5"
+        app:backgroundTint="@android:color/transparent"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/button3"
+        app:fabSize="normal"
+        android:src="@drawable/pokemon"
+        android:scaleX="2.5"
+        android:scaleY="2.5"
+        app:backgroundTint="@android:color/transparent" />
+
+</com.campbellapps.christiancampbell.peoplemonv1.Views.MapPageView>

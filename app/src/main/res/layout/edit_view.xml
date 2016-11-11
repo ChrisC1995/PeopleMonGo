@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.campbellapps.christiancampbell.peoplemonv1.Views.EditView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="New Username"
+        android:id="@+id/newUsername"
+
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Attach an image here!"
+        android:id="@+id/newImage"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+
+        />
+
+    <Button
+        android:id="@+id/camera_button"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="330dp"
+        android:drawableStart="@android:drawable/ic_menu_camera"
+        />
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        />
+
+</com.campbellapps.christiancampbell.peoplemonv1.Views.EditView>
