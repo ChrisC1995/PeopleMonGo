@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/login_button"
         android:layout_gravity="center_horizontal"
+        android:backgroundTint="#0071b9"
 
         />
 
@@ -37,7 +38,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/register_button"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#0071b9"
+
+        />
 
     <ProgressBar
         android:layout_width="wrap_content"

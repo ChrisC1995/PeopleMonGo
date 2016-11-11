@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:id="@+id/register_button"
+        android:backgroundTint="#0071b9"
         />
 
     <ProgressBar

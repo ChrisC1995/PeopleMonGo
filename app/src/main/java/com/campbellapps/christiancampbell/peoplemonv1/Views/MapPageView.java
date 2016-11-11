@@ -1,7 +1,12 @@
 package com.campbellapps.christiancampbell.peoplemonv1.Views;
 
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Base64;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -18,6 +25,7 @@ import com.campbellapps.christiancampbell.peoplemonv1.Network.RestClient;
 import com.campbellapps.christiancampbell.peoplemonv1.PeoplemonApplication;
 import com.campbellapps.christiancampbell.peoplemonv1.R;
 import com.campbellapps.christiancampbell.peoplemonv1.Stages.PeopleListStage;
+import com.campbellapps.christiancampbell.peoplemonv1.Stages.nearbyStage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +35,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -66,6 +76,10 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     public GoogleMap mMap;
 
     public ArrayList<String> caughtPeople;
+
+    private String selectedImage;
+    private String encoded;
+    private Bitmap decodedByte;
 
 
     public MapPageView(Context context, AttributeSet attrs) {
@@ -167,6 +181,28 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
             location.setSpeed(1);
             location.getSpeed();
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+
+
+            final Circle circle = mMap.addCircle(new CircleOptions().center(loc)
+                    .strokeColor(Color.BLUE).radius(100));
+
+            ValueAnimator valAnim = new ValueAnimator();
+            valAnim.setRepeatCount(ValueAnimator.INFINITE);
+            valAnim.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
+            valAnim.setIntValues(0, 100);
+            valAnim.setDuration(5000);
+            valAnim.setEvaluator(new IntEvaluator());
+            valAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            valAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    circle.setRadius(animatedFraction * 100);
+                }
+            });
+            valAnim.start();
+
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 20.0f));
             Auth check = new Auth(location.getLatitude(), location.getLongitude());
             RestClient restClient = new RestClient();
@@ -176,13 +212,13 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                     if(response.isSuccessful()){
                         userCheck();}
                     else{
-                        Toast.makeText(context, "Fail456", Toast.LENGTH_SHORT).show();
+
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(context, "Fail456", Toast.LENGTH_SHORT).show();
+
                 }
             });
         }
@@ -201,12 +237,52 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                         name = person.getId();
                         String userName = person.getUserName();
                         LatLng loc = new LatLng(person.getLatitude(), person.getLongitude());
+
+                        String base64 = person.getImage();
+
                         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.rsz_1marker);
-                        mMap.addMarker(new MarkerOptions().position(loc).snippet(name).icon(icon).title(userName));
+
+
+                        try {
+                            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//                            Bitmap image = Bitmap.createScaledBitmap(woo, 90, 90, false);
+                            Bitmap work = Bitmap.createScaledBitmap(decodedByte, 90, 90, false);
+                            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(work);
+                            mMap.addMarker(new MarkerOptions().position(loc).snippet(name).icon(bitmapDescriptor).title(person.getUserName()));
+                        } catch(Exception e) {
+                            mMap.addMarker(new MarkerOptions().position(loc).snippet(name).icon(icon).title(person.getUserName()));
+                        }
+
+
+//                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.rsz_1marker);
+//                        mMap.addMarker(new MarkerOptions().position(loc).snippet(name).icon(icon).title(userName));
 
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(final Marker marker) {
+
+
+                                Double latC = marker.getPosition().latitude;
+                                Double lngC = marker.getPosition().longitude;
+                                LatLng markCircle = new LatLng(latC, lngC);
+                                final Circle circle = mMap.addCircle(new CircleOptions().center(markCircle)
+                                        .strokeColor(Color.RED).radius(10));
+                                ValueAnimator vAnimator = new ValueAnimator();
+                                vAnimator.setRepeatCount(1);
+                                vAnimator.setRepeatMode(ValueAnimator.REVERSE);  /* PULSE */
+                                vAnimator.setIntValues(10, 0);
+                                vAnimator.setDuration(500);
+                                vAnimator.setEvaluator(new IntEvaluator());
+                                vAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                                vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                        float animatedFraction = valueAnimator.getAnimatedFraction();
+                                        circle.setRadius(animatedFraction * 10);
+                                    }
+                                });
+                                vAnimator.start();
 
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -250,13 +326,13 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                         });
                     }
                 } else {
-                    Toast.makeText(context, "Failure 1", Toast.LENGTH_SHORT).show();
+
                 }
             }
 
             @Override
             public void onFailure(Call<Auth[]> call, Throwable t) {
-                Toast.makeText(context, "Failure 2", Toast.LENGTH_SHORT).show();
+
             }
 
         });
@@ -271,6 +347,17 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                 .build(); //pushes on the stack
         flow.setHistory(newHistory, Flow.Direction.FORWARD);
     }
+
+
+    @OnClick(R.id.button2)
+    public void goToNearby(){
+        Flow flow = PeoplemonApplication.getMainFlow();
+        History newHistory = flow.getHistory().buildUpon()
+                .push(new nearbyStage())
+                .build(); //pushes on the stack
+        flow.setHistory(newHistory, Flow.Direction.FORWARD);
+    }
+
 
 
 }

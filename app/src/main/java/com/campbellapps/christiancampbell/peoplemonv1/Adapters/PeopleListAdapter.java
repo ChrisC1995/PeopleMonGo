@@ -53,6 +53,12 @@ public class PeopleListAdapter extends RecyclerView.Adapter<PeopleListAdapter.Ex
         @Bind(R.id.item_text_view)
         TextView textField;
 
+        @Bind(R.id.date_text_view)
+        TextView dateField;
+        long date = System.currentTimeMillis();
+
+
+
         public ExpenseHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView); // because we are in a view holder, do context and view.
@@ -60,7 +66,8 @@ public class PeopleListAdapter extends RecyclerView.Adapter<PeopleListAdapter.Ex
 
 
         public void bindExpense(final Auth expense){ // pass an expense in and do these things to it.
-            textField.setText(expense.getUserName());
+            textField.setText("PeopleMon: " + expense.getUserName());
+            dateField.setText("Account Created: " +expense.getDate());
         }
     }
 }

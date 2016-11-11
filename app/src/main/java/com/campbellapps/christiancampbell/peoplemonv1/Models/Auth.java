@@ -49,6 +49,17 @@ public class Auth {
     @SerializedName("UserId")
     private String id;
 
+    @SerializedName("Created")
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getCaughtUserId() {
         return CaughtUserId;
     }
@@ -176,7 +187,7 @@ public class Auth {
 
     public Auth(String Fullname, String image){
         this.Fullname = Fullname;
-        this.image = "";
+        this.image = image;
     }
 
 
